@@ -1,7 +1,7 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import TrustBar from '@/components/TrustBar';
-import Stats from '@/components/Stats';
+// import Stats from '@/components/Stats';
 import Services from '@/components/Services';
 import CaseStudies from '@/components/CaseStudies';
 import Process from '@/components/Process';
@@ -16,7 +16,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
-      <Stats />
+      {/* <Stats /> */}
       <Services />
       <CaseStudies />
       <Process />
