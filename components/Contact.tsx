@@ -60,11 +60,11 @@ export default function Contact() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div><label className="block text-xs text-slate-500 mb-2 font-medium">Phone / WhatsApp</label><input className="input-field" type="tel" name="phone" placeholder="+971 50 000 0000" value={form.phone} onChange={handleChange} /></div>
-                    <button onClick={handleSubmit} className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-sky-300/40 hover:-translate-y-0.5">
+                    
+                  </div>
+                  <button onClick={handleSubmit} className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-sky-300/40 hover:-translate-y-0.5">
                     <Send size={16} />Send Message
                   </button>
-                  </div>
-                  
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
