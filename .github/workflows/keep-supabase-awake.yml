@@ -2,17 +2,12 @@ name: Keep Supabase Awake
 
 on:
   schedule:
-    # Har 6 hours mein run hoga
     - cron: '0 */6 * * *'
-  # Manual run ke liye
   workflow_dispatch:
 
 jobs:
   keep-awake:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping website
-        run: |
-          curl -s -o /dev/null -w "Status: %{http_code}\n" \
-            https://muhammad-imran-portfolio-self.vercel.app/
-          echo "✅ Keep-alive completed at $(date -u)"
+      - run: curl -s -o /dev/null https://muhammad-imran-portfolio-self.vercel.app/
+      - run: echo "✅ Keep-alive completed at $(date -u)"
