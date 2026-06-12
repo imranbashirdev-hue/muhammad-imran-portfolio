@@ -9,7 +9,6 @@ import Testimonials from '@/components/Testimonials';
 import CTA from '@/components/CTA';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
-
 export default function Home() {
   return (
     <main className="relative bg-[#070A12] min-h-screen overflow-x-hidden">
@@ -20,7 +19,7 @@ export default function Home() {
       <Services />
       <CaseStudies />
       <Process />
-      <Testimonials />
+      <Testimonials /> 
       <CTA />
       <Contact />
       <Footer />

@@ -2,12 +2,62 @@
 
 import { useState } from 'react';
 import { MessageCircle, Phone, Mail, Send, CheckCircle, Clock, MapPin } from 'lucide-react';
+import { createClient } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function Contact() {
+  const router = useRouter();
   const [form, setForm] = useState({ name: '', email: '', phone: '', business: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const supabase = createClient();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setForm({ ...form, [e.target.name]: e.target.value });
-  const handleSubmit = (e: React.MouseEvent) => { e.preventDefault(); setSubmitted(true); };
+
+  const handleSubmit = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (!form.name || !form.email || !form.phone) {
+      setError('Name, email, and phone are required');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const { error: insertError } = await supabase.from('leads').insert([
+        {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          business: form.business || null,
+          message: form.message || null,
+          page_source: 'contact_form',
+          created_at: new Date().toISOString(),
+        }
+      ]);
+
+      if (insertError) {
+        console.error('Supabase error:', insertError);
+        setError(insertError.message);
+        setLoading(false);
+      } else {
+        setSubmitted(true);
+        setLoading(false);
+        // Redirect to thank you page after 1.5 seconds
+        setTimeout(() => {
+          router.push('/thank-you');
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Something went wrong. Please try again.');
+      setLoading(false);
+    }
+  };
+
   const waMessage = encodeURIComponent("Hi Muhammad, I'd like to discuss a strategy for my business.");
 
   return (
@@ -52,25 +102,57 @@ export default function Contact() {
           </div>
           <div className="lg:col-span-3">
             <div className="rounded-2xl p-6 lg:p-8 border border-sky-100 bg-white shadow-sm">
+              {error && (
+                <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-sm text-center">
+                  ❌ {error}
+                </div>
+              )}
+              
               {!submitted ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label className="block text-xs text-slate-500 mb-2 font-medium">Full Name *</label><input className="input-field" type="text" name="name" placeholder="Ahmed Al Mansouri" value={form.name} onChange={handleChange} /></div>
-                    <div><label className="block text-xs text-slate-500 mb-2 font-medium">Email Address *</label><input className="input-field" type="email" name="email" placeholder="ahmed@company.com" value={form.email} onChange={handleChange} /></div>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-2 font-medium">Full Name *</label>
+                      <input className="input-field w-full p-3 rounded-lg border" type="text" name="name" placeholder="Ahmed Al Mansouri" value={form.name} onChange={handleChange} />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-2 font-medium">Email Address *</label>
+                      <input className="input-field w-full p-3 rounded-lg border" type="email" name="email" placeholder="ahmed@company.com" value={form.email} onChange={handleChange} />
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div><label className="block text-xs text-slate-500 mb-2 font-medium">Phone / WhatsApp</label><input className="input-field" type="tel" name="phone" placeholder="+971 50 000 0000" value={form.phone} onChange={handleChange} /></div>
-                    
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-2 font-medium">Phone / WhatsApp</label>
+                      <input className="input-field w-full p-3 rounded-lg border" type="tel" name="phone" placeholder="+971 50 000 0000" value={form.phone} onChange={handleChange} />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-2 font-medium">Business Name</label>
+                      <input className="input-field w-full p-3 rounded-lg border" type="text" name="business" placeholder="Your Company" value={form.business} onChange={handleChange} />
+                    </div>
                   </div>
-                  <button onClick={handleSubmit} className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-sky-300/40 hover:-translate-y-0.5">
-                    <Send size={16} />Send Message
+                  <div>
+                    <label className="block text-xs text-slate-500 mb-2 font-medium">Message</label>
+                    <textarea className="input-field w-full p-3 rounded-lg border" rows={4} name="message" placeholder="Tell me about your project..." value={form.message} onChange={handleChange} />
+                  </div>
+                  <button 
+                    onClick={handleSubmit} 
+                    disabled={loading}
+                    className="w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-sky-300/40 hover:-translate-y-0.5 disabled:opacity-70"
+                  >
+                    {loading ? (
+                      <><span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />Sending...</>
+                    ) : (
+                      <><Send size={16} />Send Message</>
+                    )}
                   </button>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-6"><CheckCircle size={32} className="text-emerald-500" /></div>
-                  <h3 className="text-slate-900 font-bold text-xl mb-2">Message Sent!</h3>
-                  <p className="text-slate-400 text-sm max-w-xs">Thanks for reaching out. I&apos;ll review your message and get back to you within 24 hours.</p>
+                  <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-4">
+                    <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                  <h3 className="text-slate-900 font-bold text-lg mb-2">Redirecting...</h3>
+                  <p className="text-slate-400 text-sm max-w-xs">Please wait, you will be redirected to the thank you page.</p>
                 </div>
               )}
             </div>

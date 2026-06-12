@@ -33,7 +33,7 @@ body {
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 ::-webkit-scrollbar-track {
   background: #E0F2FE;
@@ -130,7 +130,7 @@ body {
 .marquee-track:hover { animation-play-state: paused; }
 
 /* Section styling */
-.section-padding { padding: 6rem 0; }
+.section-padding { padding: 4rem 0; }
 
 /* Grid overlay — very subtle on light bg */
 .grid-overlay {
@@ -258,5 +258,5 @@ body {
 }
 
 @media (max-width: 768px) {
-  .section-padding { padding: 4rem 0; }
+  .section-padding { padding: 2rem 1.25rem; }
 }

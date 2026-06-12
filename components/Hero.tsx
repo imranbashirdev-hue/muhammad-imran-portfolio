@@ -2,12 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Shield, TrendingUp, Users, Send, CheckCircle, Zap, Star } from 'lucide-react';
+import { createClient } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function Hero() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const router = useRouter();
   const [form, setForm] = useState({ name: '', phone: '', business: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const supabase = createClient();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -62,11 +67,44 @@ export default function Hero() {
     return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', handleResize); };
   }, []);
 
-  const handleSubmit = (e: React.MouseEvent) => {
+  const handleSubmit = async (e: React.MouseEvent) => {
     e.preventDefault();
-    if (!form.name || !form.phone) return;
+    if (!form.name || !form.phone) {
+      setError('Name and phone are required');
+      return;
+    }
+
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSubmitted(true); }, 1200);
+    setError('');
+
+    try {
+      const { error: insertError } = await supabase.from('leads').insert([
+        {
+          name: form.name,
+          phone: form.phone,
+          business: form.business || null,
+          page_source: 'hero_cta',
+          created_at: new Date().toISOString(),
+        }
+      ]);
+
+      if (insertError) {
+        console.error('Supabase error:', insertError);
+        setError(insertError.message);
+        setLoading(false);
+      } else {
+        setSubmitted(true);
+        setLoading(false);
+        // Redirect to thank you page after 1.5 seconds
+        setTimeout(() => {
+          router.push('/thank-you');
+        }, 1500);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('Something went wrong. Please try again.');
+      setLoading(false);
+    }
   };
 
   return (
@@ -151,19 +189,43 @@ export default function Hero() {
 
               {/* Form */}
               <div className="p-6">
+                {error && (
+                  <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-sm text-center">
+                    ❌ {error}
+                  </div>
+                )}
+                
                 {!submitted ? (
                   <div className="space-y-4">
                     <div>
                       <label className="block text-xs text-slate-500 mb-1.5 font-medium">Your Name *</label>
-                      <input className="input-field" type="text" placeholder="Ahmed Al Mansouri" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                      <input 
+                        className="input-field w-full p-3 rounded-lg border" 
+                        type="text" 
+                        placeholder="Ahmed Al Mansouri" 
+                        value={form.name} 
+                        onChange={(e) => setForm({ ...form, name: e.target.value })} 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs text-slate-500 mb-1.5 font-medium">WhatsApp / Phone *</label>
-                      <input className="input-field" type="tel" placeholder="+971 50 000 0000" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                      <input 
+                        className="input-field w-full p-3 rounded-lg border" 
+                        type="tel" 
+                        placeholder="+971 50 000 0000" 
+                        value={form.phone} 
+                        onChange={(e) => setForm({ ...form, phone: e.target.value })} 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs text-slate-500 mb-1.5 font-medium">Business Name</label>
-                      <input className="input-field" type="text" placeholder="Your Company" value={form.business} onChange={(e) => setForm({ ...form, business: e.target.value })} />
+                      <input 
+                        className="input-field w-full p-3 rounded-lg border" 
+                        type="text" 
+                        placeholder="Your Company" 
+                        value={form.business} 
+                        onChange={(e) => setForm({ ...form, business: e.target.value })} 
+                      />
                     </div>
 
                     <button
@@ -187,10 +249,10 @@ export default function Hero() {
                 ) : (
                   <div className="flex flex-col items-center py-8 text-center">
                     <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-4">
-                      <CheckCircle size={28} className="text-emerald-500" />
+                      <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                     </div>
-                    <h3 className="text-slate-900 font-bold text-lg mb-2">Request Received! 🎉</h3>
-                    <p className="text-slate-500 text-sm max-w-[220px]">I&apos;ll reach out on WhatsApp within 24 hours to schedule your call.</p>
+                    <h3 className="text-slate-900 font-bold text-lg mb-2">Redirecting...</h3>
+                    <p className="text-slate-500 text-sm max-w-[220px]">Please wait, you will be redirected to the thank you page.</p>
                   </div>
                 )}
               </div>
