@@ -1,0 +1,17 @@
+name: Keep Website & Supabase Awake
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'    # Har 6 hours
+  workflow_dispatch:          # Manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping website
+        run: |
+          echo "🔄 Pinging website at $(date -u)"
+          curl -s -o /dev/null -w "Status: %{http_code}\n" \
+            https://muhammad-imran-portfolio-self.vercel.app/
+          echo "✅ Keep-alive completed!"
