@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 
-// Import all components with SSR disabled
+// Dynamically import all components with SSR disabled
 const Navbar = dynamic(() => import('@/components/layout/Navbar'), { ssr: false });
 const Footer = dynamic(() => import('@/components/layout/Footer'), { ssr: false });
 const Hero = dynamic(() => import('@/components/sections/Hero'), { ssr: false });

@@ -1,20 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase';
 import Link from 'next/link';
 
+interface Post {
+  id: string;
+  title: string;
+  slug: string;
+  published: boolean;
+  created_at: string;
+}
+
 export default function AdminPosts() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const supabase = createClient();
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setLoading(true);
     const { data } = await supabase
       .from('posts')
@@ -22,28 +26,22 @@ export default function AdminPosts() {
       .order('created_at', { ascending: false });
     setPosts(data || []);
     setLoading(false);
-  };
+  }, [supabase]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const handleDelete = async (id: string) => {
-    if (!confirm('⚠️ Are you sure you want to delete this post? This action cannot be undone.')) {
-      return;
-    }
-
+    if (!confirm('Are you sure you want to delete this post?')) return;
     setDeleting(id);
-    
-    const { error } = await supabase
-      .from('posts')
-      .delete()
-      .eq('id', id);
-
+    const { error } = await supabase.from('posts').delete().eq('id', id);
     if (error) {
-      console.error('Delete error:', error);
       alert('Error deleting post: ' + error.message);
     } else {
-      alert('✅ Post deleted successfully!');
-      fetchPosts(); // Refresh list
+      alert('Post deleted successfully!');
+      fetchPosts();
     }
-    
     setDeleting(null);
   };
 
@@ -66,15 +64,9 @@ export default function AdminPosts() {
         <div className="border rounded-lg overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">Title</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Date</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Actions</th>
-              </tr>
-            </thead>
+              <tr><th className="px-4 py-3 text-left text-sm font-medium">Title</th><th className="px-4 py-3 text-left text-sm font-medium">Status</th><th className="px-4 py-3 text-left text-sm font-medium">Date</th><th className="px-4 py-3 text-left text-sm font-medium">Actions</th></tr></thead>
             <tbody>
-              {posts.map((post: any) => (
+              {posts.map((post) => (
                 <tr key={post.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-3">{post.title}</td>
                   <td className="px-4 py-3">
@@ -82,24 +74,14 @@ export default function AdminPosts() {
                       {post.published ? 'Published' : 'Draft'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">
-                    {new Date(post.created_at).toLocaleDateString()}
-                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-500">{new Date(post.created_at).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <Link href={`/admin/posts/edit/${post.id}`} className="text-blue-600 hover:underline text-sm">
-                        Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        disabled={deleting === post.id}
-                        className="text-red-600 hover:underline text-sm disabled:opacity-50"
-                      >
+                      <Link href={`/admin/posts/edit/${post.id}`} className="text-blue-600 hover:underline text-sm">Edit</Link>
+                      <button onClick={() => handleDelete(post.id)} disabled={deleting === post.id} className="text-red-600 hover:underline text-sm disabled:opacity-50">
                         {deleting === post.id ? 'Deleting...' : 'Delete'}
                       </button>
-                      <Link href={`/blog/${post.slug}`} className="text-green-600 hover:underline text-sm" target="_blank">
-                        View
-                      </Link>
+                      <Link href={`/blog/${post.slug}`} className="text-green-600 hover:underline text-sm" target="_blank">View</Link>
                     </div>
                   </td>
                 </tr>

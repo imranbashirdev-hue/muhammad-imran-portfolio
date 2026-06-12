@@ -25,7 +25,7 @@ export default function WPServicesThankYou() {
         
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-8">
           <p className="text-gray-600 mb-4">
-            I'll review your requirements and get back to you within <strong className="text-sky-600">24 hours</strong>.
+            I&apos;ll review your requirements and get back to you within <strong className="text-sky-600">24 hours</strong>.
           </p>
           
           {/* WhatsApp Button */}

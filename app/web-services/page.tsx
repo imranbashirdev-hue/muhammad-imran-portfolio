@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Phone, Shield, Zap, TrendingUp, X, CheckCircle } from "lucide-react";
+
 const allCountries = [
   // Gulf Countries
   { code: "+971", flag: "🇦🇪", country: "United Arab Emirates" },
@@ -110,7 +111,7 @@ export default function WPServicesLanding() {
   const [isLeadSubmitting, setIsLeadSubmitting] = useState(false);
   const [isLeadSuccess, setIsLeadSuccess] = useState(false);
   
-  // ✅ Name validation - only letters and spaces
+  // Name validation - only letters and spaces
   const validateName = (value: string) => {
     const nameRegex = /^[A-Za-z\s]*$/;
     return nameRegex.test(value);
@@ -343,7 +344,7 @@ export default function WPServicesLanding() {
               </div>
               <h3 className="text-xl font-bold mb-3 text-slate-800">SEO Friendly</h3>
               <p className="text-slate-600 text-sm leading-relaxed">
-                Built with Google's guidelines to help you rank higher in search results.
+                Built with Google&apos;s guidelines to help you rank higher in search results.
               </p>
             </div>
           </div>
@@ -426,144 +427,144 @@ export default function WPServicesLanding() {
         </div>
       </footer>
 
-      // Popup Modal - Updated with 100+ countries and smaller padding
-{isOpen && (
-  <div 
-    className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
-    onClick={() => setIsOpen(false)}
-  >
-    <div 
-      className="glass-strong rounded-2xl p-5 max-w-md w-full relative shadow-2xl animate-scale-in"
-      onClick={(e) => e.stopPropagation()}
-    >
-      <button
-        onClick={() => setIsOpen(false)}
-        className="absolute top-3 right-3 text-slate-400 hover:text-slate-800 transition-colors"
-      >
-        <X size={20} />
-      </button>
-      
-      <h3 className="text-xl font-bold mb-1 gradient-text">
-        Get Your Free Quote
-      </h3>
-      <p className="text-slate-500 text-xs mb-4">
-        Tell us about your project and we'll get back within 3-4 hours.
-      </p>
+      {/* Popup Modal */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+          onClick={() => setIsOpen(false)}
+        >
+          <div 
+            className="glass-strong rounded-2xl p-5 max-w-md w-full relative shadow-2xl animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-3 right-3 text-slate-400 hover:text-slate-800 transition-colors"
+            >
+              <X size={20} />
+            </button>
+            
+            <h3 className="text-xl font-bold mb-1 gradient-text">
+              Get Your Free Quote
+            </h3>
+            <p className="text-slate-500 text-xs mb-4">
+              Tell us about your project and we&apos;ll get back within 3-4 hours.
+            </p>
 
-      <form className="space-y-3" onSubmit={handleQuoteSubmit}>
-        {/* Name Field */}
-        <div>
-  <input
-    type="text"
-    placeholder="Your Full Name *"
-    className="w-full py-2.5 px-3 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-    value={quoteName}
-    onChange={handleNameChange}
-    required
-  />
- {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
-  <p className="text-gray-400 text-xs mt-1">Only letters allowed (no numbers)</p>
-</div>
-        
-        {/* Phone Field with Searchable Country Code Dropdown */}
-        <div>
-          <label className="block text-xs text-slate-500 mb-1 font-medium">Phone / WhatsApp *</label>
-          <div className="flex gap-2">
-            {/* Country Code Dropdown with Search */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                className="flex items-center gap-1 px-2 py-2.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-sm min-w-[85px]"
-              >
-                <span className="text-base">{allCountries.find(c => c.code === selectedCountryCode)?.flag || "🌍"}</span>
-                <span className="font-medium text-xs">{selectedCountryCode}</span>
-                <svg className="w-2.5 h-2.5 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+            <form className="space-y-3" onSubmit={handleQuoteSubmit}>
+              {/* Name Field */}
+              <div>
+                <input
+                  type="text"
+                  placeholder="Your Full Name *"
+                  className="w-full py-2.5 px-3 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                  value={quoteName}
+                  onChange={handleNameChange}
+                  required
+                />
+                {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
+                <p className="text-gray-400 text-xs mt-1">Only letters allowed (no numbers)</p>
+              </div>
               
-              {isCountryDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                  {/* Search Input */}
-                  <div className="p-2 border-b border-gray-100">
-                    <input
-                      type="text"
-                      placeholder="Search country or code..."
-                      className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:border-sky-500 focus:outline-none"
-                      value={searchTerm}
-                      onChange={handleCountrySearch}
-                      onKeyDown={handleKeyDown}
-                      autoFocus
-                    />
-                  </div>
-                  
-                  {/* Countries List */}
-                  <div className="max-h-48 overflow-y-auto">
-                    {filteredCountries.length > 0 ? (
-                      filteredCountries.map((country) => (
-                        <button
-                          key={country.code}
-                          type="button"
-                          onClick={() => handleSelectCountry(country.code)}
-                          className={`flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-gray-50 text-sm ${
-                            selectedCountryCode === country.code ? "bg-sky-50" : ""
-                          }`}
-                        >
-                          <span className="text-base">{country.flag}</span>
-                          <span className="text-xs font-medium">{country.code}</span>
-                          <span className="text-xs text-gray-500 truncate">{country.country}</span>
-                          {selectedCountryCode === country.code && (
-                            <span className="ml-auto text-sky-500">✓</span>
+              {/* Phone Field with Searchable Country Code Dropdown */}
+              <div>
+                <label className="block text-xs text-slate-500 mb-1 font-medium">Phone / WhatsApp *</label>
+                <div className="flex gap-2">
+                  {/* Country Code Dropdown with Search */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                      className="flex items-center gap-1 px-2 py-2.5 rounded-lg border border-gray-200 bg-white hover:bg-gray-50 text-sm min-w-[85px]"
+                    >
+                      <span className="text-base">{allCountries.find(c => c.code === selectedCountryCode)?.flag || "🌍"}</span>
+                      <span className="font-medium text-xs">{selectedCountryCode}</span>
+                      <svg className="w-2.5 h-2.5 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                    
+                    {isCountryDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                        {/* Search Input */}
+                        <div className="p-2 border-b border-gray-100">
+                          <input
+                            type="text"
+                            placeholder="Search country or code..."
+                            className="w-full p-2 text-sm border border-gray-200 rounded-lg focus:border-sky-500 focus:outline-none"
+                            value={searchTerm}
+                            onChange={handleCountrySearch}
+                            onKeyDown={handleKeyDown}
+                            autoFocus
+                          />
+                        </div>
+                        
+                        {/* Countries List */}
+                        <div className="max-h-48 overflow-y-auto">
+                          {filteredCountries.length > 0 ? (
+                            filteredCountries.map((country) => (
+                              <button
+                                key={country.code}
+                                type="button"
+                                onClick={() => handleSelectCountry(country.code)}
+                                className={`flex items-center gap-2 w-full px-3 py-2 text-left hover:bg-gray-50 text-sm ${
+                                  selectedCountryCode === country.code ? "bg-sky-50" : ""
+                                }`}
+                              >
+                                <span className="text-base">{country.flag}</span>
+                                <span className="text-xs font-medium">{country.code}</span>
+                                <span className="text-xs text-gray-500 truncate">{country.country}</span>
+                                {selectedCountryCode === country.code && (
+                                  <span className="ml-auto text-sky-500">✓</span>
+                                )}
+                              </button>
+                            ))
+                          ) : (
+                            <div className="p-3 text-center text-gray-500 text-sm">
+                              No country found
+                            </div>
                           )}
-                        </button>
-                      ))
-                    ) : (
-                      <div className="p-3 text-center text-gray-500 text-sm">
-                        No country found
+                        </div>
                       </div>
                     )}
                   </div>
+                  
+                  {/* Phone Number Input */}
+                  <input
+                    type="tel"
+                    placeholder="300 1234567"
+                    className="flex-1 py-2.5 px-3 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    value={quotePhone}
+                    onChange={handlePhoneChange}
+                    required
+                  />
                 </div>
-              )}
-            </div>
-            
-            {/* Phone Number Input */}
-            <input
-              type="tel"
-              placeholder="300 1234567"
-              className="flex-1 py-2.5 px-3 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-              value={quotePhone}
-              onChange={handlePhoneChange}
-              required
-            />
+                {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
+                <p className="text-gray-400 text-xs mt-1">Example: {selectedCountryCode} 300 1234567</p>
+              </div>
+              
+              {/* Message Field */}
+              <div>
+                <textarea
+                  placeholder="Briefly describe your project requirements... *"
+                  className="w-full h-24 resize-none py-2 px-3 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                  value={quoteMessage}
+                  onChange={(e) => setQuoteMessage(e.target.value)}
+                  required
+                ></textarea>
+              </div>
+              
+              <button
+                type="submit"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-orange-500/30 disabled:opacity-50 text-sm"
+                disabled={isQuoteSubmitting}
+              >
+                {isQuoteSubmitting ? "Submitting..." : "Submit & Get Free Quote"}
+              </button>
+            </form>
           </div>
-          {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
-          <p className="text-gray-400 text-xs mt-1">Example: {selectedCountryCode} 300 1234567</p>
         </div>
-        
-        {/* Message Field */}
-        <div>
-          <textarea
-            placeholder="Briefly describe your project requirements... *"
-            className="w-full h-24 resize-none py-2 px-3 text-sm rounded-lg border border-gray-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-            value={quoteMessage}
-            onChange={(e) => setQuoteMessage(e.target.value)}
-            required
-          ></textarea>
-        </div>
-        
-        <button
-          type="submit"
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-orange-500/30 disabled:opacity-50 text-sm"
-          disabled={isQuoteSubmitting}
-        >
-          {isQuoteSubmitting ? "Submitting..." : "Submit & Get Free Quote"}
-        </button>
-      </form>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 }

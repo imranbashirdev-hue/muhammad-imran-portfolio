@@ -28,7 +28,7 @@ export default function ThankYou() {
         {/* Info Card */}
         <div className="bg-white rounded-2xl p-6 shadow-lg mb-8">
           <p className="text-gray-600 mb-3">
-            I'll review your information and get back to you within <strong className="text-sky-600">24 hours</strong> via WhatsApp or email.
+            I&apos;ll review your information and get back to you within <strong className="text-sky-600">24 hours</strong> via WhatsApp or email.
           </p>
           
           {/* WhatsApp Link Button */}

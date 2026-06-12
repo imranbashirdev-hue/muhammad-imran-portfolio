@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase';
-import { Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 
 export default function ImageUpload({ onUpload }: { onUpload: (url: string) => void }) {
   const [uploading, setUploading] = useState(false);
@@ -28,7 +28,7 @@ export default function ImageUpload({ onUpload }: { onUpload: (url: string) => v
   };
 
   return (
-    <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-50 border border-sky-200">
+    <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-50 border border-sky-200 hover:bg-sky-100 transition">
       <Upload size={16} />
       {uploading ? 'Uploading...' : 'Upload Image'}
       <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
