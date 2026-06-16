@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Zap, Linkedin, Instagram, Facebook, MessageCircle } from 'lucide-react';
 
 const services = ['Google Ads Management', 'Meta Ads Management', 'SEO Services', 'WordPress Development', 'Website Design', 'GA4 & GTM Setup', 'E-commerce Development', 'Conversion Rate Optimization'];
@@ -11,15 +13,40 @@ const socials = [
   { icon: MessageCircle, href: 'https://wa.me/971501234567', label: 'WhatsApp', color: '#25D366' },
 ];
 
+// ✅ Pages where footer should be hidden
+const hideFooterOnPages = [
+  '/real-estate',
+  '/real-estate/thank-you',
+  '/dentist',
+  '/dentist/thank-you',
+  '/web-services',
+  '/web-services/thank-you',
+];
+
 export default function Footer() {
-  const scrollTo = (href: string) => document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' });
+  const pathname = usePathname();
+
+  // ✅ Don't render on landing pages
+  if (hideFooterOnPages.includes(pathname)) {
+    return null;
+  }
+
+  const scrollTo = (href: string) => {
+    const element = document.getElementById(href.replace('#', ''));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="relative border-t border-sky-100 pt-16 pb-8 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="lg:col-span-1">
             <a href="#home" onClick={() => scrollTo('#home')} className="flex items-center gap-2 mb-4 cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center"><Zap size={16} className="text-white" /></div>
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center">
+                <Zap size={16} className="text-white" />
+              </div>
               <span className="font-bold text-lg text-slate-900 tracking-tight">Muhammad <span className="gradient-text">Imran</span></span>
             </a>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">Digital Growth Strategist helping businesses across UAE and GCC scale through data-driven marketing and high-converting digital experiences.</p>
@@ -36,24 +63,34 @@ export default function Footer() {
             <p className="text-slate-700 font-semibold text-sm mb-5 uppercase tracking-wider">Navigation</p>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
-                <li key={link.href}><button onClick={() => scrollTo(link.href)} className="text-slate-400 hover:text-sky-600 text-sm transition-colors duration-200">{link.label}</button></li>
+                <li key={link.href}>
+                  <button onClick={() => scrollTo(link.href)} className="text-slate-400 hover:text-sky-600 text-sm transition-colors duration-200">
+                    {link.label}
+                  </button>
+                </li>
               ))}
             </ul>
           </div>
           <div className="lg:col-span-2">
             <p className="text-slate-700 font-semibold text-sm mb-5 uppercase tracking-wider">Services</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {services.map((s) => (<button key={s} onClick={() => scrollTo('#services')} className="text-slate-400 hover:text-sky-600 text-sm text-left transition-colors duration-200">{s}</button>))}
+              {services.map((s) => (
+                <button key={s} onClick={() => scrollTo('#services')} className="text-slate-400 hover:text-sky-600 text-sm text-left transition-colors duration-200">
+                  {s}
+                </button>
+              ))}
             </div>
           </div>
         </div>
         <div className="section-divider mb-6" />
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-slate-400 text-xs">© 2025 Muhammad Imran. All Rights Reserved.</p>
+          <p className="text-slate-400 text-xs">© {new Date().getFullYear()} Muhammad Imran. All Rights Reserved.</p>
           <div className="flex items-center gap-4 text-slate-400 text-xs">
-            <a href="#" className="hover:text-sky-600 transition-colors">Privacy Policy</a>
+            <Link href="/privacy-policy" className="hover:text-sky-600 transition-colors">Privacy Policy</Link>
             <span>·</span>
-            <a href="#" className="hover:text-sky-600 transition-colors">Terms of Service</a>
+            <Link href="/terms-and-conditions" className="hover:text-sky-600 transition-colors">Terms of Service</Link>
+            <span>·</span>
+            <Link href="/blog" className="hover:text-sky-600 transition-colors">Blog</Link>
           </div>
         </div>
       </div>

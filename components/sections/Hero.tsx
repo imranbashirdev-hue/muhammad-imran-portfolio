@@ -1,274 +1,406 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Shield, TrendingUp, Users, Send, CheckCircle, Zap, Star } from 'lucide-react';
-import { createClient } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { ArrowRight, Play, TrendingUp, Users, DollarSign, Shield, Sparkles, Star, Zap, Award, Clock, ChevronRight } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 
 export default function Hero() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const router = useRouter();
-  const [form, setForm] = useState({ name: '', phone: '', business: '' });
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const supabase = createClient();
+  const [hoveredStat, setHoveredStat] = useState<number | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [activeMetric, setActiveMetric] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
+  // Advanced 3D particle system with mouse interaction
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    const particles: { x: number; y: number; vx: number; vy: number; size: number; alpha: number }[] = [];
-    for (let i = 0; i < 60; i++) {
-      particles.push({
+
+    // Create multiple particle layers
+    const layers = [
+      { count: 80, speed: 0.2, size: 1, color: '#0EA5E9', alpha: 0.3 },
+      { count: 50, speed: 0.15, size: 1.5, color: '#3B82F6', alpha: 0.25 },
+      { count: 30, speed: 0.1, size: 2, color: '#6366F1', alpha: 0.2 },
+    ];
+
+    const particles = layers.flatMap((layer, layerIdx) => 
+      Array.from({ length: layer.count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        size: Math.random() * 1.5 + 0.5,
-        alpha: Math.random() * 0.25 + 0.05,
-      });
-    }
+        vx: (Math.random() - 0.5) * layer.speed,
+        vy: (Math.random() - 0.5) * layer.speed,
+        size: layer.size + Math.random() * 1,
+        alpha: layer.alpha + Math.random() * 0.1,
+        color: layer.color,
+        layer: layerIdx,
+        pulse: Math.random() * Math.PI * 2,
+      }))
+    );
+
     let animId: number;
+    let time = 0;
+
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+      time += 0.008;
+      
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.pulse += 0.02;
+        
+        if (p.x < -50) p.x = canvas.width + 50;
+        if (p.x > canvas.width + 50) p.x = -50;
+        if (p.y < -50) p.y = canvas.height + 50;
+        if (p.y > canvas.height + 50) p.y = -50;
+        
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 2);
+        gradient.addColorStop(0, p.color);
+        gradient.addColorStop(1, 'transparent');
+        
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(14, 165, 233, ${p.alpha})`;
+        ctx.arc(p.x, p.y, p.size + Math.sin(p.pulse) * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
         ctx.fill();
       });
-      particles.forEach((p1, i) => {
-        particles.slice(i + 1).forEach((p2) => {
-          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(14, 165, 233, ${0.08 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        });
-      });
+      
       animId = requestAnimationFrame(animate);
     };
     animate();
-    const handleResize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    
     window.addEventListener('resize', handleResize);
-    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', handleResize); };
+    window.addEventListener('mousemove', (e) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    });
+    
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
-  const handleSubmit = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.phone) {
-      setError('Name and phone are required');
-      return;
+  const metrics = [
+    { label: 'Google ROAS', value: '6.8x', change: '+196%', color: '#0EA5E9', icon: TrendingUp },
+    { label: 'Monthly Leads', value: '420+', change: '+394%', color: '#3B82F6', icon: Users },
+    { label: 'Revenue Growth', value: '310%', change: 'YoY', color: '#6366F1', icon: DollarSign },
+  ];
+
+  const stats = [
+    { icon: Award, value: '50+', label: 'Projects Delivered', color: '#0EA5E9', bg: 'from-cyan-500/20 to-cyan-500/5' },
+    { icon: TrendingUp, value: '230%', label: 'Avg. ROAS', color: '#3B82F6', bg: 'from-blue-500/20 to-blue-500/5' },
+    { icon: DollarSign, value: '$20M+', label: 'Ad Spend Managed', color: '#6366F1', bg: 'from-indigo-500/20 to-indigo-500/5' },
+    { icon: Shield, value: '98%', label: 'Retention Rate', color: '#0EA5E9', bg: 'from-cyan-500/20 to-cyan-500/5' },
+  ];
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.2 }
     }
+  };
 
-    setLoading(true);
-    setError('');
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } }
+  };
 
-    try {
-      const { error: insertError } = await supabase.from('leads').insert([
-        {
-          name: form.name,
-          phone: form.phone,
-          business: form.business || null,
-          page_source: 'hero_cta',
-          created_at: new Date().toISOString(),
-        }
-      ]);
-
-      if (insertError) {
-        console.error('Supabase error:', insertError);
-        setError(insertError.message);
-        setLoading(false);
-      } else {
-        setSubmitted(true);
-        setLoading(false);
-        // Redirect to thank you page after 1.5 seconds
-        setTimeout(() => {
-          router.push('/thank-you');
-        }, 1500);
-      }
-    } catch (err) {
-      console.error('Error:', err);
-      setError('Something went wrong. Please try again.');
-      setLoading(false);
+  const floatingVariants = {
+    initial: { y: 0 },
+    animate: {
+      y: [-10, 10, -10],
+      transition: { duration: 6, repeat: Infinity, ease: "easeInOut" }
     }
   };
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center overflow-hidden grid-overlay" style={{ background: 'linear-gradient(160deg, #F0F9FF 0%, #E0F2FE 40%, #F8FAFF 100%)' }}>
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" style={{ opacity: 0.7 }} />
+    <section 
+      ref={containerRef} 
+      id="home" 
+      className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-cyan-50/30 to-blue-50/20"
+    >
+      {/* Animated Canvas Background */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none z-0" />
+      
+      {/* Animated Gradient Orbs with Parallax */}
+      <div 
+        className="absolute inset-0 overflow-hidden pointer-events-none"
+        style={{ transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px)` }}
+      >
+        <div className="orb w-[800px] h-[800px] bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 opacity-15 top-[-20%] right-[-20%] rounded-full blur-3xl animate-pulse" />
+        <div className="orb w-[600px] h-[600px] bg-gradient-to-r from-blue-500 to-purple-500 opacity-10 bottom-[-10%] left-[-10%] rounded-full blur-3xl animate-pulse delay-1000" />
+        <div className="orb w-[400px] h-[400px] bg-gradient-to-r from-cyan-300 to-blue-300 opacity-15 top-[50%] left-[30%] rounded-full blur-3xl animate-pulse delay-2000" />
+      </div>
 
-      {/* Orbs */}
-      <div className="orb w-[600px] h-[600px] opacity-20 pulse-glow" style={{ background: 'radial-gradient(circle, #38BDF8 0%, transparent 70%)', top: '-10%', right: '-8%' }} />
-      <div className="orb w-[500px] h-[500px] opacity-15 float-slow" style={{ background: 'radial-gradient(circle, #93C5FD 0%, transparent 70%)', bottom: '-5%', left: '-8%' }} />
-      <div className="orb w-[300px] h-[300px] opacity-10" style={{ background: 'radial-gradient(circle, #BAE6FD 0%, transparent 70%)', top: '40%', left: '35%' }} />
+      {/* Grid Overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#0EA5E908_1px,transparent_1px),linear-gradient(to_bottom,#0EA5E908_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <motion.div 
+        style={{ y, opacity }}
+        className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-20"
+      >
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* LEFT COLUMN */}
+          <motion.div variants={containerVariants} initial="hidden" animate="visible">
+            {/* Availability Badge */}
+            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 tag mb-6 group cursor-pointer hover:scale-105 transition-all duration-300">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+              </span>
+              <span className="text-sm font-medium">Muhammad Imran — Available for engagements</span>
+              <Sparkles size={12} className="text-cyan-500 ml-1 animate-pulse" />
+            </motion.div>
 
-          {/* LEFT */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-7 text-sm bg-white/80 border border-sky-200 shadow-sm">
-              <Shield size={14} className="text-sky-500" />
-              <span className="text-slate-600">Trusted by </span>
-              <span className="text-sky-600 font-semibold">50+ Businesses Across UAE</span>
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse ml-1" />
-            </div>
+            {/* Main Heading with Glow Effect */}
+            <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.08] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+              Stop Burning{' '}
+              <span className="relative inline-block">
+                <span className="gradient-text relative z-10">Ad Spend.</span>
+                <span className="absolute -bottom-2 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full opacity-60 blur-sm" />
+                <span className="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
+              </span>
+            </motion.h1>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight mb-5" style={{ fontFamily: 'Syne, sans-serif' }}>
-              <span className="text-slate-900 block">Scale Your</span>
-              <span className="text-slate-900 block">Business.</span>
-              <span className="gradient-text block glow-text">Maximize ROI.</span>
-            </h1>
-
-            <p className="text-base md:text-lg text-slate-500 mb-8 leading-relaxed max-w-lg">
+            {/* Description */}
+            <motion.p variants={itemVariants} className="text-lg text-slate-600 mb-8 leading-relaxed max-w-lg">
               Data-driven marketing systems, high-converting websites, and performance campaigns that generate{' '}
-              <span className="text-slate-800 font-medium">measurable business growth</span> and real revenue.
-            </p>
+              <span className="font-semibold text-slate-800 bg-gradient-to-r from-cyan-50 to-blue-50 px-2 py-0.5 rounded-lg">measurable business growth</span> and real revenue.
+            </motion.p>
 
-            <div className="flex flex-wrap gap-3 mb-10">
-              {[
-                { icon: TrendingUp, label: '230% Avg ROAS', color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-200' },
-                { icon: Users, label: '50+ Clients', color: 'text-sky-600', bg: 'bg-sky-50 border-sky-200' },
-                { icon: Shield, label: '$20M+ Managed', color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200' },
-              ].map(({ icon: Icon, label, color, bg }) => (
-                <div key={label} className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm bg-white/70 ${bg} shadow-sm`}>
-                  <Icon size={13} className={color} />
-                  <span className="text-slate-700 font-medium">{label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { label: 'Google ROAS', value: '6.8x', change: '+196%', color: '#059669', bg: '#ECFDF5', border: '#A7F3D0' },
-                { label: 'Lead Growth', value: '420/mo', change: '+394%', color: '#0284C7', bg: '#F0F9FF', border: '#BAE6FD' },
-                { label: 'Revenue', value: '+310%', change: 'YoY', color: '#4F46E5', bg: '#EEF2FF', border: '#C7D2FE' },
-              ].map((item) => (
-                <div key={item.label} className="rounded-xl p-4 border transition-all duration-300 hover:-translate-y-1 card-shine shadow-sm" style={{ background: item.bg, borderColor: item.border }}>
-                  <p className="text-xs text-slate-500 mb-2 uppercase tracking-wider leading-tight">{item.label}</p>
-                  <p className="text-2xl font-black mb-0.5" style={{ color: item.color, fontFamily: 'Syne, sans-serif' }}>{item.value}</p>
-                  <p className="text-xs font-semibold" style={{ color: item.color }}>{item.change}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT — CTA Form */}
-          <div className="relative">
-            <div className="absolute -inset-4 rounded-3xl opacity-20 blur-2xl" style={{ background: 'radial-gradient(circle, #38BDF8 0%, #93C5FD 60%, transparent 100%)' }} />
-
-            <div className="relative bg-white rounded-2xl border border-sky-200 overflow-hidden shadow-xl shadow-sky-100/60">
-              {/* Header */}
-              <div className="px-6 pt-6 pb-5 border-b border-sky-100" style={{ background: 'linear-gradient(135deg, #F0F9FF 0%, #EFF6FF 100%)' }}>
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center">
-                    <Zap size={15} className="text-white" />
+            {/* Stats Row */}
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-3 mb-8">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={i}
+                  onMouseEnter={() => setHoveredStat(i)}
+                  onMouseLeave={() => setHoveredStat(null)}
+                  className="relative group cursor-pointer"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${stat.bg} blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  <div className="relative glass rounded-xl px-4 py-2.5 flex items-center gap-2 transition-all duration-300 hover:shadow-xl overflow-hidden">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110" style={{ background: `${stat.color}15` }}>
+                      <stat.icon size={16} style={{ color: stat.color }} />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900 text-lg">{stat.value}</div>
+                      <div className="text-xs text-slate-500">{stat.label}</div>
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                   </div>
-                  <span className="text-slate-900 font-bold text-base">Get Free Strategy Call</span>
-                </div>
-                <p className="text-slate-500 text-sm">30-minute session — no obligations, no hard selling.</p>
-                <div className="flex items-center gap-1.5 mt-3">
-                  {[...Array(5)].map((_, i) => <Star key={i} size={12} className="text-amber-400 fill-amber-400" />)}
-                  <span className="text-slate-400 text-xs ml-1">5.0 · 50+ reviews</span>
-                </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-4">
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-cyan-500/30 transition-all duration-300"
+              >
+                <span className="relative z-10 flex items-center gap-2 px-6 py-3">
+                  Book a Free Strategy Call
+                  <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="group relative overflow-hidden rounded-xl bg-white border-2 border-cyan-200 text-slate-700 font-semibold hover:border-cyan-300 hover:shadow-md transition-all duration-300"
+              >
+                <span className="relative z-10 flex items-center gap-2 px-6 py-3">
+                  <Play size={16} className="text-cyan-600" />
+                  Watch Case Studies
+                  <ChevronRight size={14} className="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                </span>
+              </motion.button>
+            </motion.div>
+
+            {/* Trust Badge */}
+            <motion.div variants={itemVariants} className="mt-8 flex items-center gap-4">
+              <div className="flex -space-x-2">
+                {['AM', 'SZ', 'KR', 'NH'].map((initial, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 1 + i * 0.1 }}
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-md"
+                  >
+                    {initial}
+                  </motion.div>
+                ))}
               </div>
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
+                ))}
+                <span className="text-sm text-slate-500 ml-1 font-medium">4.9 · 50+ reviews</span>
+              </div>
+            </motion.div>
+          </motion.div>
 
-              {/* Form */}
-              <div className="p-6">
-                {error && (
-                  <div className="mb-4 p-2 rounded-lg bg-red-50 text-red-600 text-sm text-center">
-                    ❌ {error}
-                  </div>
-                )}
+          {/* RIGHT COLUMN - Premium Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <motion.div 
+              variants={floatingVariants}
+              initial="initial"
+              animate="animate"
+              className="relative group"
+            >
+              {/* Glow Effect */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-2xl blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-700" />
+              
+              {/* Main Card */}
+              <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl border border-white/30 shadow-2xl overflow-hidden">
+                {/* Animated Border Gradient */}
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" style={{ padding: '2px' }} />
                 
-                {!submitted ? (
-                  <div className="space-y-4">
+                {/* Card Header */}
+                <div className="p-6 border-b border-cyan-100 bg-gradient-to-r from-cyan-50/50 to-white">
+                  <div className="flex justify-between items-center">
                     <div>
-                      <label className="block text-xs text-slate-500 mb-1.5 font-medium">Your Name *</label>
-                      <input 
-                        className="input-field w-full p-3 rounded-lg border" 
-                        type="text" 
-                        placeholder="Ahmed Al Mansouri" 
-                        value={form.name} 
-                        onChange={(e) => setForm({ ...form, name: e.target.value })} 
-                      />
+                      <h3 className="text-xl font-bold text-slate-800">Performance Dashboard</h3>
+                      <p className="text-sm text-slate-500">Real-time analytics preview</p>
                     </div>
-                    <div>
-                      <label className="block text-xs text-slate-500 mb-1.5 font-medium">WhatsApp / Phone *</label>
-                      <input 
-                        className="input-field w-full p-3 rounded-lg border" 
-                        type="tel" 
-                        placeholder="+971 50 000 0000" 
-                        value={form.phone} 
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })} 
-                      />
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-blue-100 flex items-center justify-center shadow-inner">
+                      <Zap size={20} className="text-cyan-600 animate-pulse" />
                     </div>
-                    <div>
-                      <label className="block text-xs text-slate-500 mb-1.5 font-medium">Business Name</label>
-                      <input 
-                        className="input-field w-full p-3 rounded-lg border" 
-                        type="text" 
-                        placeholder="Your Company" 
-                        value={form.business} 
-                        onChange={(e) => setForm({ ...form, business: e.target.value })} 
-                      />
-                    </div>
+                  </div>
+                </div>
 
-                    <button
-                      onClick={handleSubmit}
-                      disabled={loading}
-                      className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-sm transition-all duration-300 hover:shadow-lg hover:shadow-sky-300/40 hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+                {/* Metrics Grid */}
+                <div className="p-6 space-y-5">
+                  {metrics.map((metric, idx) => (
+                    <motion.div 
+                      key={idx}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + idx * 0.1 }}
+                      className="space-y-2"
                     >
-                      {loading ? (
-                        <><span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />Sending...</>
-                      ) : (
-                        <><Send size={15} />Book My Free Call<ArrowRight size={14} /></>
-                      )}
-                    </button>
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 rounded-full" style={{ background: metric.color }} />
+                          <span className="text-sm font-medium text-slate-700">{metric.label}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-2xl font-bold" style={{ color: metric.color }}>{metric.value}</span>
+                          <span className="text-xs text-green-500 ml-2">{metric.change}</span>
+                        </div>
+                      </div>
+                      <div className="relative h-2 bg-cyan-100 rounded-full overflow-hidden">
+                        <motion.div 
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${[78, 82, 68][idx]}%` }}
+                          transition={{ duration: 1.2, delay: 0.8 + idx * 0.1 }}
+                          className="absolute inset-y-0 left-0 rounded-full"
+                          style={{ background: `linear-gradient(90deg, ${metric.color}, #38BDF8)` }}
+                        >
+                          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent to-white/30 animate-pulse" />
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  ))}
 
-                    <div className="flex flex-col gap-1.5 pt-1">
-                      {['✓ Free 30-min strategy session', '✓ Custom growth plan included', '✓ Response within 24 hours'].map((t) => (
-                        <p key={t} className="text-xs text-slate-400">{t}</p>
-                      ))}
-                    </div>
+                  {/* Quick Stats */}
+                  <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-cyan-100">
+                    {[
+                      { value: '50+', label: 'Projects', icon: Award, color: '#0EA5E9' },
+                      { value: '6.8x', label: 'Avg. ROAS', icon: TrendingUp, color: '#3B82F6' },
+                      { value: '24/7', label: 'Support', icon: Clock, color: '#6366F1' },
+                    ].map((item, i) => (
+                      <motion.div 
+                        key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.1 + i * 0.1 }}
+                        className="text-center group/stat"
+                      >
+                        <div className="flex justify-center mb-1">
+                          <item.icon size={18} style={{ color: item.color }} />
+                        </div>
+                        <div className="text-xl font-bold transition-all duration-300 group-hover/stat:scale-110" style={{ color: item.color }}>{item.value}</div>
+                        <div className="text-xs text-slate-500">{item.label}</div>
+                      </motion.div>
+                    ))}
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center py-8 text-center">
-                    <div className="w-14 h-14 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center mb-4">
-                      <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                    </div>
-                    <h3 className="text-slate-900 font-bold text-lg mb-2">Redirecting...</h3>
-                    <p className="text-slate-500 text-sm max-w-[220px]">Please wait, you will be redirected to the thank you page.</p>
-                  </div>
-                )}
+                </div>
+
+                {/* Live Indicator */}
+                <div className="absolute bottom-3 right-3 flex items-center gap-1.5 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-medium">Live data</span>
+                </div>
+
+                {/* Animated Scan Line */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent animate-[scan_3s_linear_infinite]" 
+                    style={{ boxShadow: '0 0 10px #0EA5E9' }} />
+                </div>
               </div>
-            </div>
-
-            <div className="absolute -top-3 -right-3 px-3 py-1.5 rounded-full text-xs font-bold text-white shadow-md" style={{ background: 'linear-gradient(135deg, #0EA5E9, #3B82F6)' }}>
-              100% Free
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30">
-        <span className="text-xs text-slate-400 uppercase tracking-widest">Scroll</span>
-        <div className="w-px h-10 bg-gradient-to-b from-sky-400 to-transparent" />
-      </div>
+      {/* Scroll Indicator */}
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.8 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20"
+      >
+        <span className="text-xs text-slate-400 uppercase tracking-[0.2em] font-medium">Explore</span>
+        <motion.div 
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          className="w-6 h-10 border-2 border-cyan-300 rounded-full flex justify-center"
+        >
+          <motion.div 
+            animate={{ y: [4, 12, 4] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="w-1.5 h-1.5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full mt-2"
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* Custom Keyframes for Scan Animation */}
+      <style jsx>{`
+        @keyframes scan {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(1000%); }
+        }
+      `}</style>
     </section>
   );
 }
