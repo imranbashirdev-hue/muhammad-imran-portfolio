@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const supabase = createClient();

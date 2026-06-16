@@ -1,8 +1,9 @@
 import { createClient } from '@/lib/supabase';
 import Link from 'next/link';
 import Image from 'next/image';
-
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 
 export default async function BlogPage() {
   const supabase = createClient();
