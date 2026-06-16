@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image'; 
 import { usePathname } from 'next/navigation';
 import { Menu, X, Zap, Phone, Mail, MapPin, Search, Clock, Send, CheckCircle, ChevronDown } from 'lucide-react';
 import { allCountries, DEFAULT_COUNTRY_CODE } from '@/components/constants/countries';
@@ -206,8 +207,14 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-sm"><Zap size={16} className="text-white" /></div>
-              <span className="font-bold text-lg text-slate-900 tracking-tight">Muhammad <span className="gradient-text">Imran</span></span>
+              <Image
+  src="/images/imranads.webp"
+    alt="Muhammad Imran Logo"
+    width={180}
+    height={60}
+    className="object-contain"
+    priority
+/>
             </Link>
 
             <div className="hidden lg:flex items-center gap-1">

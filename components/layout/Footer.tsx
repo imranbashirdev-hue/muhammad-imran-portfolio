@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Zap, Linkedin, Instagram, Facebook, MessageCircle } from 'lucide-react';
 
@@ -44,11 +45,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="lg:col-span-1">
             <a href="#home" onClick={() => scrollTo('#home')} className="flex items-center gap-2 mb-4 cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center">
-                <Zap size={16} className="text-white" />
-              </div>
-              <span className="font-bold text-lg text-slate-900 tracking-tight">Muhammad <span className="gradient-text">Imran</span></span>
-            </a>
+              <Image
+                src="/images/imranads.webp"
+                  alt="Muhammad Imran Logo"
+                  width={180}
+                  height={60}
+                  className="object-contain"
+                  priority
+              />
+              </a>
             <p className="text-slate-400 text-sm leading-relaxed mb-6">Digital Growth Strategist helping businesses across UAE and GCC scale through data-driven marketing and high-converting digital experiences.</p>
             <div className="flex items-center gap-3">
               {socials.map(({ icon: Icon, href, label }) => (
