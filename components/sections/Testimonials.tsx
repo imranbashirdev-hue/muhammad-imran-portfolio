@@ -5,9 +5,56 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const testimonials = [
-  { name: 'Ahmed Al Mansouri', role: 'Marketing Director', company: 'Prestige Properties', location: 'Dubai', text: 'Muhammad transformed our digital marketing completely. Within 3 months, our qualified leads tripled and cost per lead dropped by 76%.', rating: 5, avatar: 'AM', color: '#0EA5E9' },
-  { name: 'Dr. Sara Al Zaabi', role: 'Owner', company: 'Elite Dental Center', location: 'Abu Dhabi', text: 'We went from 45 appointments per month to over 170. The ROI has been extraordinary.', rating: 5, avatar: 'SZ', color: '#3B82F6' },
-  { name: 'Khalid Al Rashid', role: 'E-commerce Director', company: 'Luxe Fashion KSA', location: 'Riyadh', text: 'Our Meta Ads ROAS went from 1.4x to 5.2x consistently. The data-driven approach built trust from day one.', rating: 5, avatar: 'KR', color: '#6366F1' },
+  {
+    name: 'Pikker Team',
+    role: 'Project Manager',
+    company: 'Pikker',
+    location: 'UK',
+    text: 'Imran helped turn the project requirements into a clean, responsive website with a modern layout and smooth user experience. Communication was clear throughout, and updates were handled quickly.',
+    rating: 5,
+    avatar: 'PK',
+    color: '#0EA5E9'
+  },
+  {
+    name: 'Green Energy Team',
+    role: 'Project Manager',
+    company: 'Green Energy Upgrades',
+    location: 'Australia',
+    text: 'The website was built with a strong focus on service presentation, lead generation, and a cleaner overall structure. We appreciated the quick turnaround and attention to detail across the pages.',
+    rating: 5,
+    avatar: 'GE',
+    color: '#0EA5E9'
+  },
+  {
+    name: 'Cell Security Team',
+    role: 'Project Manager',
+    company: 'Cell Security',
+    location: 'UK',
+    text: 'Imran supported the website development with a professional, business-focused approach and was responsive to feedback during the process. The final result felt much more polished and easier to navigate.',
+    rating: 5,
+    avatar: 'CS',
+    color: '#0EA5E9'
+  },
+  {
+    name: 'Top Location Equipment Team',
+    role: 'Project Manager',
+    company: 'Top Location Equipment',
+    location: 'UK',
+    text: 'A reliable and straightforward experience from start to finish. The website structure, page layout, and content presentation were handled well, and the project moved forward efficiently.',
+    rating: 5,
+    avatar: 'TL',
+    color: '#0EA5E9'
+  },
+  {
+    name: 'Smart Inc Team',
+    role: 'Project Manager',
+    company: 'Smart Inc',
+    location: 'UK',
+    text: 'Great support on the web development side — from layout adjustments to building pages in a way that aligned with the business goals. Fast communication and a solid understanding of WordPress work.',
+    rating: 5,
+    avatar: 'SI',
+    color: '#0EA5E9'
+  }
 ];
 
 export default function Testimonials() {

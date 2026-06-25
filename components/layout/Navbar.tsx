@@ -188,16 +188,30 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Top Header Bar */}
+      {/* ✅ Top Header Bar - Updated */}
       <div className="bg-gradient-to-r from-sky-100 to-blue-100 text-slate-700 py-2 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-xs md:text-sm">
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-            <div className="flex items-center gap-2"><Clock size={14} className="text-sky-600" /><span>MON - SAT 08:00am to 06:00 pm</span></div>
-            <div className="flex items-center gap-2"><MapPin size={14} className="text-sky-600" /><span>Dubai, United Arab Emirates</span></div>
+            <div className="flex items-center gap-2">
+              <Clock size={14} className="text-sky-600" />
+              <span>MON - SAT 08:00am to 06:00 pm</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin size={14} className="text-sky-600" />
+              <span>World Wide</span>
+            </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
-            <a href="mailto:hello@muhammadimran.com" className="flex items-center gap-2 hover:text-sky-700 transition"><Mail size={14} className="text-sky-600" /><span>hello@muhammadimran.com</span></a>
-            <a href="tel:+971501234567" className="flex items-center gap-2 hover:text-sky-700 transition"><Phone size={14} className="text-sky-600" /><span>+971 50 123 4567</span></a>
+            <a href="mailto:imranbashirdev@gmail.com" className="flex items-center gap-2 hover:text-sky-700 transition">
+              <Mail size={14} className="text-sky-600" />
+              <span>imranbashirdev@gmail.com</span>
+            </a>
+            <a href="https://wa.me/923414960064" className="flex items-center gap-2 hover:text-sky-700 transition"
+            target="_blank" 
+        rel="noopener noreferrer">
+              <Phone size={14} className="text-sky-600" />
+              <span>+92 341 496 0064</span>
+            </a>
           </div>
         </div>
       </div>
@@ -208,13 +222,13 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             <Link href="/" className="flex items-center gap-2 group cursor-pointer">
               <Image
-  src="/images/imranads.webp"
-    alt="Muhammad Imran Logo"
-    width={180}
-    height={60}
-    className="object-contain"
-    priority
-/>
+                src="/images/imranads.webp"
+                alt="Muhammad Imran Logo"
+                width={180}
+                height={60}
+                className="object-contain"
+                priority
+              />
             </Link>
 
             <div className="hidden lg:flex items-center gap-1">

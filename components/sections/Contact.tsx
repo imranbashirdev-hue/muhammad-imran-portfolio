@@ -60,15 +60,15 @@ export default function Contact() {
             <div className="bg-white rounded-2xl p-6 border border-cyan-100 shadow-sm">
               <p className="font-semibold text-slate-800 mb-4">Quick Contact</p>
               <div className="space-y-3">
-                <a href="https://wa.me/971501234567" target="_blank" className="flex items-center gap-3 p-3 rounded-xl bg-green-50 border border-green-200 hover:bg-green-100 transition group">
+                <a href="https://wa.me/923414960064" target="_blank" className="flex items-center gap-3 p-3 rounded-xl bg-green-50 border border-green-200 hover:bg-green-100 transition group">
                   <div className="w-9 h-9 rounded-lg bg-green-100 flex items-center justify-center"><MessageCircle size={18} className="text-green-600" /></div>
                   <div><p className="text-slate-800 text-sm font-medium">WhatsApp</p><p className="text-slate-400 text-xs">Chat instantly</p></div>
                 </a>
-                <a href="tel:+971501234567" className="flex items-center gap-3 p-3 rounded-xl bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition">
+                <a href="tel:+923414960064" className="flex items-center gap-3 p-3 rounded-xl bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition">
                   <div className="w-9 h-9 rounded-lg bg-cyan-100 flex items-center justify-center"><Phone size={18} className="text-cyan-600" /></div>
                   <div><p className="text-slate-800 text-sm font-medium">Call Now</p><p className="text-slate-400 text-xs">+971 50 123 4567</p></div>
                 </a>
-                <a href="mailto:hello@muhammadimran.com" className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition">
+                <a href="mailto:imranbashirdev@gmail.com" className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition">
                   <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center"><Mail size={18} className="text-blue-600" /></div>
                   <div><p className="text-slate-800 text-sm font-medium">Email</p><p className="text-slate-400 text-xs">hello@muhammadimran.com</p></div>
                 </a>

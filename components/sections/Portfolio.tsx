@@ -7,12 +7,12 @@ import { allCountries, DEFAULT_COUNTRY_CODE } from '@/components/constants/count
 import { createClient } from '@/lib/supabase';
 
 const projects = [
-  { id: 1, title: 'Skyline Residences', image: '/images/6af825b0e96230b690cb535a0b726b48.webp' },
-  { id: 2, title: 'LDA City Lahore', image: '/images/6af825b0e96230b690cb535a0b726b48.webp' },
-  { id: 3, title: 'Zamin City', image: '/images/6af825b0e96230b690cb535a0b726b48.webp' },
-  { id: 4, title: 'DHA Rahbar', image: '/images/6af825b0e96230b690cb535a0b726b48.webp' },
-  { id: 5, title: 'Skyline Residences', image: '/images/6af825b0e96230b690cb535a0b726b48.webp' },
-  { id: 6, title: 'Zamin City', image: '/images/6af825b0e96230b690cb535a0b726b48.webp' },
+  { id: 1, title: 'Pikker', image: '/images/Pikker-Website.webp' },
+  { id: 2, title: 'Green Energy Upgrades', image: '/images/green-energy.webp' },
+  { id: 3, title: 'Cell Security', image: '/images/cell.webp' },
+  { id: 4, title: 'Top Location Equipment', image: '/images/top.webp' },
+  { id: 5, title: 'Smart Inc', image: '/images/Smart.webp' },
+  { id: 6, title: 'Genos Car Sales', image: '/images/Car.webp' },
 ];
 
 export default function Portfolio() {
