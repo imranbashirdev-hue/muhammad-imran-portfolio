@@ -7,7 +7,7 @@ import { Zap, Linkedin, Instagram, Facebook, MessageCircle } from 'lucide-react'
 
 const services = ['Google Ads Management', 'Meta Ads Management', 'SEO Services', 'WordPress Development', 'Website Design', 'GA4 & GTM Setup', 'E-commerce Development', 'Conversion Rate Optimization'];
 const quickLinks = [
-  { label: 'Home', href: '#home' },
+  { label: 'Home', href: 'home' },
   { label: 'Services', href: '#services' },
   { label: 'Results', href: '#work' },
   { label: 'Testimonials', href: '#testimonials' },
@@ -36,7 +36,6 @@ const socials = [
   },
 ];
 
-// ✅ Pages where footer should be hidden
 const hideFooterOnPages = [
   '/real-estate',
   '/real-estate/thank-you',
@@ -50,26 +49,26 @@ export default function Footer() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // ✅ Don't render on landing pages
+ 
   if (hideFooterOnPages.includes(pathname)) {
     return null;
   }
 
   const scrollTo = (href: string) => {
-    // ✅ If on home page, scroll smoothly
+  
     if (pathname === '/') {
       const element = document.getElementById(href.replace('#', ''));
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
-      // ✅ If on any other page, redirect to home with hash
+     
       router.push('/' + href);
     }
   };
 
   const scrollToService = (sectionId: string) => {
-    // ✅ Always redirect to home page services section
+   
     router.push('/#services');
   };
 
@@ -78,7 +77,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="lg:col-span-1">
-            <a href="#home" onClick={() => scrollTo('#home')} className="flex items-center gap-2 mb-4 cursor-pointer">
+            <a href="/" onClick={() => scrollTo('#home')} className="flex items-center gap-2 mb-4 cursor-pointer">
               <Image
                 src="/images/imranads.webp"
                 alt="Muhammad Imran Logo"
