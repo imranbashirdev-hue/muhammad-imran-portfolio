@@ -69,7 +69,7 @@ export default function Testimonials() {
         </div>
         <div className="relative">
           <AnimatePresence mode="wait">
-            <motion.div key={current} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -50 }} className="bg-white rounded-2xl p-8 text-center border border-cyan-100 shadow-lg">
+            <motion.div key={current} initial={{ opacity: 0, x: 50 }} animate={{ opacity: 1, x: 0 }}  viewport={{ once: true, amount: 0.2 }} className="bg-white rounded-2xl p-8 text-center border border-cyan-100 shadow-lg">
               <div className="flex justify-center gap-1 mb-6">{[...Array(testimonials[current].rating)].map((_, i) => (<Star key={i} size={18} className="fill-yellow-400 text-yellow-400" />))}</div>
               <Quote size={32} className="text-cyan-200 mx-auto mb-4" />
               <p className="text-slate-600 text-lg leading-relaxed mb-6">"{testimonials[current].text}"</p>

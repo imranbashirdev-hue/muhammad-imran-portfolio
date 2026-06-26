@@ -21,6 +21,7 @@ const navLinks = [
   { label: 'Services', href: '#services' },
   { label: 'Work', href: '#work' },
   { label: 'Process', href: '#process' },
+    { label: 'Case Studies', href: '/case-studies' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ];
@@ -40,16 +41,18 @@ export default function Navbar() {
   const [quotePhone, setQuotePhone] = useState("");
   const [quoteEmail, setQuoteEmail] = useState("");
   const [quoteMessage, setQuoteMessage] = useState("");
+  const [quoteIndustry, setQuoteIndustry] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [selectedCountryCode, setSelectedCountryCode] = useState(DEFAULT_COUNTRY_CODE);
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+92");
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-  const [nameError, setNameError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
+const [nameError, setNameError] = useState("");
+const [phoneError, setPhoneError] = useState("");
+const [countryError, setCountryError] = useState("");
   const [countrySearchTerm, setCountrySearchTerm] = useState("");
   const [filteredCountries, setFilteredCountries] = useState(allCountries);
+  const [isCountrySelected, setIsCountrySelected] = useState(false);
 
-  if (hideHeaderOnPages.includes(pathname)) return null;
 
   useEffect(() => {
     const filtered = allCountries.filter(
@@ -124,9 +127,11 @@ export default function Navbar() {
     }
   };
 
-  const handleSelectCountry = (code: string) => {
-    setSelectedCountryCode(code);
-    setIsCountryDropdownOpen(false);
+const handleSelectCountry = (code: string) => {
+  setSelectedCountryCode(code);
+   setIsCountrySelected(true);
+  setCountryError("");
+  setIsCountryDropdownOpen(false);
     setCountrySearchTerm("");
     setFilteredCountries(allCountries);
   };
@@ -138,11 +143,15 @@ export default function Navbar() {
       return;
     }
     if (!quotePhone.trim()) {
-      setPhoneError("Phone number is required");
-      return;
-    }
-    
-    setIsSubmitting(true);
+  setPhoneError("Phone number is required");
+  return;
+}
+if (!isCountrySelected) {
+  setCountryError("Please select your country code");
+  return;
+}
+
+setIsSubmitting(true);
     
     try {
       const fullPhone = selectedCountryCode + quotePhone;
@@ -154,6 +163,7 @@ export default function Navbar() {
           phone: fullPhone,
           message: quoteMessage || 'Strategy call request',
           page_source: 'navbar_popup',
+          industry: quoteIndustry || 'Not specified',
           created_at: new Date().toISOString(),
         }
       ]);
@@ -175,8 +185,11 @@ export default function Navbar() {
         setQuotePhone("");
         setQuoteEmail("");
         setQuoteMessage("");
-        setNameError("");
-        setPhoneError("");
+setQuoteIndustry("");
+setNameError("");
+setPhoneError("");
+setCountryError("");
+setIsCountrySelected(false);
       }, 2000);
       
     } catch (err) {
@@ -185,7 +198,7 @@ export default function Navbar() {
       setIsSubmitting(false);
     }
   };
-
+ if (hideHeaderOnPages.includes(pathname)) return null;
   return (
     <>
       {/* ✅ Top Header Bar - Updated */}
@@ -281,7 +294,9 @@ export default function Navbar() {
                   <div className="flex gap-2">
                     <div className="relative">
                       <button type="button" onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)} className="flex items-center gap-1 px-3 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-sm min-w-[85px]">
-                        <span className="text-lg">{allCountries.find(c => c.code === selectedCountryCode)?.flag || "🌍"}</span><span className="font-medium">{selectedCountryCode}</span><ChevronDown size={14} className="ml-1" />
+<span className="text-lg">{allCountries.find(c => c.code === selectedCountryCode)?.flag || "🇵🇰"}</span>
+<span className="font-medium">{selectedCountryCode}</span>
+<ChevronDown size={14} className="ml-1" />
                       </button>
                       {isCountryDropdownOpen && (
                         <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
@@ -295,9 +310,27 @@ export default function Navbar() {
                     <input type="tel" placeholder="Phone Number *" className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100" value={quotePhone} onChange={handlePhoneChange} required />
                   </div>
                   {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
-                  <p className="text-gray-400 text-xs mt-1">Example: {selectedCountryCode} 50 123 4567</p>
+{countryError && <p className="text-red-500 text-xs mt-1">{countryError}</p>}
+  <p className="text-gray-400 text-xs mt-1">Example: {selectedCountryCode || "+92"} 50 123 4567</p>
                 </div>
-                <div><textarea placeholder="Tell me about your project requirements..." rows={3} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100 resize-none" value={quoteMessage} onChange={(e) => setQuoteMessage(e.target.value)} /></div>
+<div>
+  <select
+    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100 text-sm text-slate-700 bg-white"
+    value={quoteIndustry}
+    onChange={(e) => setQuoteIndustry(e.target.value)}
+  >
+    <option value="">Select Your Industry</option>
+    <option value="Dental & Medical">🦷 Dental & Medical</option>
+    <option value="Trade & Construction">🔧 Trade & Construction</option>
+    <option value="Real Estate">🏠 Real Estate</option>
+    <option value="E-commerce">🛒 E-commerce</option>
+    <option value="SaaS & Tech">💻 SaaS & Tech</option>
+    <option value="Professional Services">💼 Professional Services</option>
+    <option value="Automotive">🚗 Automotive</option>
+    <option value="Other">📁 Other</option>
+  </select>
+</div>
+<div><textarea placeholder="Tell me about your project requirements..." rows={3} className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100 resize-none" value={quoteMessage} onChange={(e) => setQuoteMessage(e.target.value)} /></div>
                 <button type="submit" disabled={isSubmitting} className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-50 flex items-center justify-center gap-2">
                   {isSubmitting ? <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Submitting...</> : <><Send size={16} /> Schedule My Free Call</>}
                 </button>

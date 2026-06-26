@@ -5,7 +5,7 @@ import { Send, CheckCircle, MessageCircle, Phone, Mail, Clock, MapPin } from 'lu
 import { createClient } from '@/lib/supabase';
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+ const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '', industry: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -26,8 +26,9 @@ export default function Contact() {
         name: formData.name,
         email: formData.email,
         phone: formData.phone,
-        message: formData.message,
-        page_source: 'portfolio_contact',
+       message: formData.message,
+industry: formData.industry || 'Not specified',
+page_source: 'portfolio_contact',
         created_at: new Date().toISOString(),
       }]);
 
@@ -35,7 +36,7 @@ export default function Contact() {
         setError('Something went wrong. Please try again.');
       } else {
         setSubmitted(true);
-        setFormData({ name: '', email: '', phone: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', message: '', industry: '' });
         setTimeout(() => setSubmitted(false), 5000);
       }
     } catch (err) {
@@ -66,17 +67,17 @@ export default function Contact() {
                 </a>
                 <a href="tel:+923414960064" className="flex items-center gap-3 p-3 rounded-xl bg-cyan-50 border border-cyan-200 hover:bg-cyan-100 transition">
                   <div className="w-9 h-9 rounded-lg bg-cyan-100 flex items-center justify-center"><Phone size={18} className="text-cyan-600" /></div>
-                  <div><p className="text-slate-800 text-sm font-medium">Call Now</p><p className="text-slate-400 text-xs">+971 50 123 4567</p></div>
+                  <div><p className="text-slate-800 text-sm font-medium">Call Now</p><p className="text-slate-400 text-xs">+92 341 496 0064</p></div>
                 </a>
                 <a href="mailto:imranbashirdev@gmail.com" className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 border border-blue-200 hover:bg-blue-100 transition">
                   <div className="w-9 h-9 rounded-lg bg-blue-100 flex items-center justify-center"><Mail size={18} className="text-blue-600" /></div>
-                  <div><p className="text-slate-800 text-sm font-medium">Email</p><p className="text-slate-400 text-xs">hello@muhammadimran.com</p></div>
+                  <div><p className="text-slate-800 text-sm font-medium">Email</p><p className="text-slate-400 text-xs">imranbashirdev@gmail.com</p></div>
                 </a>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-5 border border-cyan-100 space-y-4">
               <div className="flex items-start gap-3"><div className="w-8 h-8 rounded-lg bg-cyan-50 flex items-center justify-center"><Clock size={15} className="text-cyan-500" /></div><div><p className="text-slate-800 text-sm font-medium">Response Time</p><p className="text-slate-400 text-xs">Typically within 24 hours</p></div></div>
-              <div className="flex items-start gap-3"><div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><MapPin size={15} className="text-blue-500" /></div><div><p className="text-slate-800 text-sm font-medium">Serving</p><p className="text-slate-400 text-xs">UAE, Saudi Arabia, Qatar & International</p></div></div>
+              <div className="flex items-start gap-3"><div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center"><MapPin size={15} className="text-blue-500" /></div><div><p className="text-slate-800 text-sm font-medium">Serving</p><p className="text-slate-400 text-xs">UK, USA, & International</p></div></div>
             </div>
           </div>
 
@@ -91,7 +92,24 @@ export default function Contact() {
                     <div><input type="email" name="email" placeholder="Email Address *" className="input-field" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required /></div>
                   </div>
                   <div><input type="tel" name="phone" placeholder="Phone / WhatsApp *" className="input-field" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} required /></div>
-                  <div><textarea name="message" placeholder="Tell me about your project..." rows={4} className="input-field resize-none" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} /></div>
+<div>
+  <select
+    className="input-field text-sm text-slate-700 bg-white"
+    value={formData.industry}
+    onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+  >
+    <option value="">Select Your Industry</option>
+    <option value="Dental & Medical">🦷 Dental & Medical</option>
+    <option value="Trade & Construction">🔧 Trade & Construction</option>
+    <option value="Real Estate">🏠 Real Estate</option>
+    <option value="E-commerce">🛒 E-commerce</option>
+    <option value="SaaS & Tech">💻 SaaS & Tech</option>
+    <option value="Professional Services">💼 Professional Services</option>
+    <option value="Automotive">🚗 Automotive</option>
+    <option value="Other">📁 Other</option>
+  </select>
+</div>
+<div><textarea name="message" placeholder="Tell me about your project..." rows={4} className="input-field resize-none" value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} /></div>
                   <button type="submit" disabled={loading} className="w-full btn-primary flex items-center justify-center gap-2 disabled:opacity-50">{loading ? 'Sending...' : <><Send size={16} /> Send Message</>}</button>
                 </form>
               ) : (

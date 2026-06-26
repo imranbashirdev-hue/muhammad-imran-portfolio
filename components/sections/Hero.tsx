@@ -29,17 +29,20 @@ export default function Hero() {
   const [quotePhone, setQuotePhone] = useState("");
   const [quoteEmail, setQuoteEmail] = useState("");
   const [quoteMessage, setQuoteMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const [quoteIndustry, setQuoteIndustry] = useState("");
+const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   
   // Country code states
-  const [selectedCountryCode, setSelectedCountryCode] = useState(DEFAULT_COUNTRY_CODE);
+  const [selectedCountryCode, setSelectedCountryCode] = useState("+92");
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const [countrySearchTerm, setCountrySearchTerm] = useState("");
   const [filteredCountries, setFilteredCountries] = useState(allCountries);
+  const [isCountrySelected, setIsCountrySelected] = useState(false);
   const countrySearchRef = useRef<HTMLInputElement>(null);
   const [nameError, setNameError] = useState("");
-  const [phoneError, setPhoneError] = useState("");
+const [phoneError, setPhoneError] = useState("");
+const [countryError, setCountryError] = useState("");
 
   // Existing particle effect useEffect
   useEffect(() => {
@@ -127,12 +130,14 @@ export default function Hero() {
     setFilteredCountries(filtered);
   };
 
-  const handleSelectCountry = (code: string) => {
-    setSelectedCountryCode(code);
-    setIsCountryDropdownOpen(false);
-    setCountrySearchTerm("");
-    setFilteredCountries(allCountries);
-  };
+ const handleSelectCountry = (code: string) => {
+  setSelectedCountryCode(code);
+  setIsCountrySelected(true);
+  setCountryError("");
+  setIsCountryDropdownOpen(false);
+  setCountrySearchTerm("");
+  setFilteredCountries(allCountries);
+};
 
   const validateName = (value: string) => {
     const nameRegex = /^[A-Za-z\s]*$/;
@@ -175,9 +180,13 @@ export default function Hero() {
       return;
     }
     if (!quotePhone.trim()) {
-      setPhoneError("Phone number is required");
-      return;
-    }
+  setPhoneError("Phone number is required");
+  return;
+}
+if (!isCountrySelected) {
+  setCountryError("Please select your country code");
+  return;
+}
     
     setIsSubmitting(true);
     
@@ -190,8 +199,9 @@ export default function Hero() {
           email: quoteEmail,
           phone: fullPhone,
           message: quoteMessage || "Strategy call request from Hero section",
-          page_source: 'hero_popup',
-          service_name: 'Strategy Call',
+page_source: 'hero_popup',
+service_name: 'Strategy Call',
+industry: quoteIndustry || 'Not specified',
           created_at: new Date().toISOString(),
         }
       ]);
@@ -213,8 +223,11 @@ export default function Hero() {
         setQuotePhone("");
         setQuoteEmail("");
         setQuoteMessage("");
-        setNameError("");
-        setPhoneError("");
+setQuoteIndustry("");
+setNameError("");
+setPhoneError("");
+setCountryError("");
+setIsCountrySelected(false);
       }, 2000);
       
     } catch (err) {
@@ -227,14 +240,14 @@ export default function Hero() {
   // Updated Metrics
   const metrics = [
     { label: 'Projects Delivered', value: '15+', change: 'Completed', color: '#0EA5E9', icon: Award },
-    { label: 'Social Media', value: '10K+', change: 'Followers', color: '#3B82F6', icon: Users },
+    { label: 'Audit Turnaround', value: '48hr', change: 'Audit Report', color: '#3B82F6', icon: Users },
     { label: 'Client Rating', value: '5.0★', change: 'From 10+ reviews', color: '#6366F1', icon: Star },
   ];
 
   // Updated Stats
   const stats = [
     { icon: Award, value: '15+', label: 'Projects Delivered', color: '#0EA5E9', bg: 'from-cyan-500/20 to-cyan-500/5' },
-    { icon: Users, value: '10K+', label: 'Social Followers', color: '#3B82F6', bg: 'from-blue-500/20 to-blue-500/5' },
+    { icon: Users, value: '48hr', label: 'Audit Turnaround', color: '#3B82F6', bg: 'from-blue-500/20 to-blue-500/5' },
     { icon: TrendingUp, value: '100%', label: 'Client Satisfaction', color: '#6366F1', bg: 'from-indigo-500/20 to-indigo-500/5' },
     { icon: Shield, value: '5.0★', label: 'Avg. Rating', color: '#0EA5E9', bg: 'from-cyan-500/20 to-cyan-500/5' },
   ];
@@ -489,7 +502,7 @@ export default function Hero() {
                     <div className="grid grid-cols-3 gap-4 mt-6 pt-4 border-t border-cyan-100 group-hover/dashboard:border-white/20 transition-all duration-500">
                       {[
                         { value: '15+', label: 'Projects', icon: Award, color: '#0EA5E9' },
-                        { value: '10K+', label: 'Followers', icon: Users, color: '#3B82F6' },
+                        { value: '48hr', label: 'Audit Turnaround', icon: Users, color: '#3B82F6' },
                         { value: '5.0★', label: 'Rating', icon: Star, color: '#6366F1' },
                       ].map((item, i) => (
                         <motion.div 
@@ -608,8 +621,8 @@ export default function Hero() {
                         onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)} 
                         className="flex items-center gap-1 px-3 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 text-sm min-w-[85px]"
                       >
-                        <span className="text-lg">{allCountries.find(c => c.code === selectedCountryCode)?.flag || "🌍"}</span>
-                        <span className="font-medium">{selectedCountryCode}</span>
+                     <span className="text-lg">{allCountries.find(c => c.code === selectedCountryCode)?.flag || "🇵🇰"}</span>
+<span className="font-medium">{selectedCountryCode}</span>
                         <ChevronDown size={14} className="ml-1" />
                       </button>
                       {isCountryDropdownOpen && (
@@ -656,14 +669,33 @@ export default function Hero() {
                       required 
                     />
                   </div>
-                  {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
+                 {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
+{countryError && <p className="text-red-500 text-xs mt-1">{countryError}</p>}
                   <p className="text-gray-400 text-xs mt-1">Example: {selectedCountryCode} 50 123 4567</p>
                 </div>
                 
                 <div>
-                  <textarea 
-                    placeholder="Tell me about your business & goals..." 
-                    rows={3} 
+  <select
+    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100 text-sm text-slate-700 bg-white"
+    value={quoteIndustry}
+    onChange={(e) => setQuoteIndustry(e.target.value)}
+  >
+    <option value="">Select Your Industry</option>
+    <option value="Dental & Medical">🦷 Dental & Medical</option>
+    <option value="Trade & Construction">🔧 Trade & Construction</option>
+    <option value="Real Estate">🏠 Real Estate</option>
+    <option value="E-commerce">🛒 E-commerce</option>
+    <option value="SaaS & Tech">💻 SaaS & Tech</option>
+    <option value="Professional Services">💼 Professional Services</option>
+    <option value="Automotive">🚗 Automotive</option>
+    <option value="Other">📁 Other</option>
+  </select>
+</div>
+
+<div>
+  <textarea 
+    placeholder="Tell me about your business & goals..." 
+    rows={3}
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-sky-400 focus:outline-none focus:ring-2 focus:ring-sky-100 resize-none" 
                     value={quoteMessage} 
                     onChange={(e) => setQuoteMessage(e.target.value)} 

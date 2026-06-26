@@ -85,4 +85,4 @@ export const allCountries = [
 ];
 
 // Default country code
-export const DEFAULT_COUNTRY_CODE = "+971";
+export const DEFAULT_COUNTRY_CODE = "";
