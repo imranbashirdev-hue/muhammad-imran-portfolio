@@ -211,7 +211,7 @@ setIsCountrySelected(false);
             </div>
             <div className="flex items-center gap-2">
               <MapPin size={14} className="text-sky-600" />
-              <span>World Wide</span>
+              <span>UK, USA, & International</span>
             </div>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
