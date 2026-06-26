@@ -111,25 +111,25 @@ export default function DulwichDentistsCase() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // ✅ Name validation
+    //  Name validation
     if (!quoteName.trim()) {
       setNameError("Name is required");
       return;
     }
     
-    // ✅ Phone number validation
+    //  Phone number validation
     if (!quotePhone.trim()) {
       setPhoneError("Phone number is required");
       return;
     }
     
-    // ✅ Country code validation - MUST select a country
+    // Country code validation - MUST select a country
     if (!isCountrySelected) {
       setCountryError("Please select your country code");
       return;
     }
     
-    // ✅ Clear errors and proceed
+    //  Clear errors and proceed
     setNameError("");
     setPhoneError("");
     setCountryError("");
@@ -415,7 +415,7 @@ export default function DulwichDentistsCase() {
 
       </div>
 
-      {/* ✅ Popup Modal - Country Code Required Fix */}
+      {/*  Popup Modal - Country Code Required Fix */}
       {isPopupOpen && (
         <div 
           className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
@@ -466,7 +466,7 @@ export default function DulwichDentistsCase() {
                   />
                 </div>
                 
-                {/* ✅ Phone Field - Country Code Required */}
+                {/*  Phone Field - Country Code Required */}
                 <div>
                   <div className="flex gap-2">
                     <div className="relative">

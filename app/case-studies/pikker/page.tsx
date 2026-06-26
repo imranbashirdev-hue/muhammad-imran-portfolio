@@ -51,7 +51,7 @@ export default function DulwichDentistsCase() {
           <div className="flex flex-wrap gap-2 mb-4">
             <span className="px-3 py-1 bg-cyan-50 text-cyan-700 border border-cyan-200 text-xs font-semibold rounded-full">🦷 Dental & Medical</span>
             <span className="px-3 py-1 bg-slate-50 text-slate-600 border border-slate-200 text-xs font-semibold rounded-full">📍 London, UK</span>
-            <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-200 text-xs font-semibold rounded-full">✅ Completed</span>
+            <span className="px-3 py-1 bg-green-50 text-green-700 border border-green-200 text-xs font-semibold rounded-full"> Completed</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
             Dulwich Dentists — <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600">3x More Patient Enquiries</span>

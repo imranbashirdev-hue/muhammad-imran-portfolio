@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: curl -s -o /dev/null https://muhammad-imran-portfolio-self.vercel.app/
-      - run: echo "✅ Keep-alive completed at $(date -u)"
+      - run: echo " Keep-alive completed at $(date -u)"

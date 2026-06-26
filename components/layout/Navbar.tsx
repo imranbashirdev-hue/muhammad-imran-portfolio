@@ -18,9 +18,9 @@ const hideHeaderOnPages = [
 
 const navLinks = [
   { label: 'Home', href: '/' },
+  { label: 'Process', href: '#process' },
   { label: 'Services', href: '#services' },
   { label: 'Work', href: '#work' },
-  { label: 'Process', href: '#process' },
     { label: 'Case Studies', href: '/case-studies' },
   { label: 'Testimonials', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
@@ -201,7 +201,7 @@ setIsCountrySelected(false);
  if (hideHeaderOnPages.includes(pathname)) return null;
   return (
     <>
-      {/* ✅ Top Header Bar - Updated */}
+      {/* Top Header Bar - Updated */}
       <div className="bg-gradient-to-r from-sky-100 to-blue-100 text-slate-700 py-2 px-4">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 text-xs md:text-sm">
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">

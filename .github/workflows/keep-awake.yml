@@ -14,4 +14,4 @@ jobs:
           echo "🔄 Pinging website at $(date -u)"
           curl -s -o /dev/null -w "Status: %{http_code}\n" \
             https://muhammad-imran-portfolio-self.vercel.app/
-          echo "✅ Keep-alive completed!"
+          echo " Keep-alive completed!"
